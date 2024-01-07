@@ -3,9 +3,6 @@ from datetime import date, timedelta
 import random
 import os
 
-beginning_date = date(2020, 1, 1)
-ending_date = date(2024, 1, 6)
-date_diff = (ending_date - beginning_date).days
 all_weather_options = ["sunny", "rainy", "cloudy", "snowy"]
 winter_temperatures = list(range(51))
 summer_temperatures = list(range(50, 101))
@@ -19,7 +16,7 @@ def get_random_weather(temp):
 
 def get_random_temp(date: date):
     allowed_temps = summer_temperatures if date.month >= 5 and date.month <= 9 else winter_temperatures
-    # print(f'{date} {allowed_temps}')
+
     num = random.randrange(0, len(allowed_temps))
     return allowed_temps[num]
 
@@ -37,6 +34,8 @@ def output_to_file():
 
     file.close()
 
+    print(f'{len(dataset)} record(s) written to file')
+
 def load_data():
     for i in range(date_diff):
         new_date = beginning_date + timedelta(days=i)
@@ -47,8 +46,39 @@ def load_data():
             hourly_forecast = f'{new_date} {h:02}:00,{random_foreacst},{random_temp}'
             dataset.append(hourly_forecast)
 
+def gather_inputs():
+    is_valid = False
+    beginning_date_local = date(1900, 1, 1)
+    ending_date_local = date(1900, 1, 1)
+
+    while is_valid == False:
+        print("Enter beginning date: yyyy-mm-dd")
+        beginning_date_input = input()
+        try:
+            beginning_date_local = date.fromisoformat(beginning_date_input)
+            is_valid = True
+        except:
+            print("invalid, try again!!!")
+
+    is_valid = False
+
+    while is_valid == False:
+        print ("Enter ending date: yyyy-mm-dd")
+        ending_date_input = input()
+        
+        try:
+            ending_date_local = date.fromisoformat(ending_date_input)
+            is_valid = True
+        except:
+            print("invalid, try again!!!")
+
+    return beginning_date_local, ending_date_local
+
 def main():
     load_data()
     output_to_file()
+
+beginning_date, ending_date = gather_inputs()
+date_diff = (ending_date - beginning_date).days
 
 main()
